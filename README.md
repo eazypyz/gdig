@@ -1,47 +1,84 @@
-gdig 🕵️‍♂️
-gdig adalah utilitas Command-Line Interface (CLI) berkinerja tinggi yang dirancang khusus untuk mempercepat fase reconnaissance dalam Bug Bounty. Dibangun sepenuhnya menggunakan ekosistem standar Golang (zero-dependency), tool ini secara otomatis menelusuri target, mengekstrak tautan JavaScript, dan memindai hardcoded secrets serta endpoints API secara konkuren.
+# gdig 🕵️‍♂️
 
-🚀 Fitur Utama
-Deep JS Crawling: Mengunduh dan menganalisis aset .js dari target secara asinkron.
+Utilitas Command-Line Interface (CLI) berkinerja tinggi untuk mempercepat fase reconnaissance dalam Bug Bounty. Dibangun sepenuhnya menggunakan Go dengan fokus pada kecepatan, portabilitas, dan kemudahan integrasi.
 
-Engine Deteksi Berbasis Layanan: Memanfaatkan ruleset regex terstruktur (terinspirasi dari Keyhacks) untuk mengidentifikasi kredensial AWS, Stripe, GitHub, Slack, hingga mendeteksi single-value format seperti HackerOne API Token.
+## 🚀 Fitur Utama
 
-Konkurensi (Goroutines): Memproses puluhan tautan secara paralel dengan kontrol penuh atas jumlah threads untuk mencegah rate-limiting.
+- **Deep JS Crawling**: Mengunduh dan menganalisis aset `.js` dari target secara asinkron
+- **Engine Deteksi Berbasis Layanan**: Memanfaatkan ruleset regex terstruktur (terinspirasi dari Keyhacks) untuk mengidentifikasi kredensial AWS, Stripe, GitHub, Slack, dan layanan lainnya
+- **Konkurensi (Goroutines)**: Memproses puluhan tautan secara paralel dengan kontrol penuh atas jumlah threads untuk mencegah rate-limiting
+- **Integrasi Pipeline**: Mode Silent (`-s`) untuk membuang log yang tidak perlu, sehingga output dapat dirangkai (piping) ke utilitas fuzzer atau filter teks
+- **Portabilitas Ekstrem**: Statically linked binary tanpa dependensi C Runtime (CGO), ideal untuk ARM64 dan mobile security lab
 
-Integrasi Pipeline: Mendukung Silent Mode (-s) untuk membuang log yang tidak perlu, sehingga output dapat dirangkai (piping) dengan mudah ke utilitas fuzzer atau filter teks.
+## 🛠️ Instalasi & Kompilasi
 
-Portabilitas Ekstrem: Statically linked binary. Dapat dikompilasi tanpa C Runtime (CGO) sehingga sangat ideal dieksekusi di environment berarsitektur ARM64 maupun mobile security lab.
+### Prerequisites
+Pastikan Anda telah menginstal **Go**. gdig tidak bergantung pada modul eksternal, sehingga kompilasi berjalan instan.
 
-🛠️ Instalasi & Kompilasi
-Pastikan Anda telah menginstal Go. Karena gdig tidak bergantung pada modul eksternal, proses kompilasinya berjalan instan.
+### Kompilasi Standar (Linux/Windows/macOS x86_64)
 
-Kompilasi Standar (Linux/Windows/macOS x86_64):
+```bash
 go mod init gdig
 go build -o gdig main.go
+```
 
-Kompilasi Khusus (Mobile/Termux/ARM64 Environment):
-Untuk menghindari error resolusi socket (_Ctype_socklen_t) yang sering terjadi pada lingkungan bionic libc, gunakan kompilasi Pure-Go berikut:
+### Kompilasi untuk ARM64 / Termux / Mobile
 
+Untuk menghindari error resolusi socket yang sering terjadi pada lingkungan bionic libc, gunakan Pure-Go compilation:
+
+```bash
 CGO_ENABLED=0 go build -o gdig main.go
+```
 
-📖 Panduan Penggunaan
-Gunakan flags bawaan untuk mengonfigurasi crawling.
+## 📖 Panduan Penggunaan
 
-# Penggunaan dasar (menggunakan default 5 threads)
+### Penggunaan Dasar
+
+```bash
+# Default: 5 threads
 ./gdig -u https://target.com
 
-# Eksekusi agresif dengan 20 threads
+# Mode Agresif: 20 threads
 ./gdig -u https://target.com -t 20
 
-# Silent Mode: Sembunyikan banner & error, cocok untuk output redirection
+# Silent Mode: Sembunyikan banner & error (cocok untuk output redirection)
 ./gdig -u https://target.com -s > results.txt
 
-# Ekstraksi otomatis: Hanya mengambil secrets dan simpan ke file terpisah
+# Ekstraksi Secrets Otomatis
 ./gdig -u https://target.com -s | grep "\[SECRET\]" > leaked_keys.txt
+```
 
-🔗 Integrasi dengan Keyhacks
-Hasil deteksi secrets pada gdig telah diklasifikasikan berdasarkan layanan untuk mempermudah validasi.
+### Flags yang Tersedia
 
-contoh output
+| Flag | Deskripsi |
+|------|-----------|
+| `-u` | Target URL (required) |
+| `-t` | Jumlah threads/goroutines (default: 5) |
+| `-s` | Silent mode - sembunyikan banner dan error |
+
+## 🔗 Output Format
+
+Hasil deteksi secrets telah diklasifikasikan berdasarkan layanan untuk mempermudah validasi.
+
+### Contoh Output
+
+```
 [ENDPOINT] https://target.com/assets/app.js -> /api/v1/users
 [SECRET] [AWS Access Key] https://target.com/assets/app.js -> AKIAIOSFODNN7EXAMPLE
+```
+
+## 📚 Layanan yang Didukung
+
+- AWS
+- Stripe
+- GitHub
+- Slack
+- Dan banyak layanan lainnya (lihat Keyhacks ruleset)
+
+## 📄 Lisensi
+
+[Tambahkan informasi lisensi jika ada]
+
+## 🤝 Kontribusi
+
+Contributions are welcome! Silakan buka issue atau pull request untuk perbaikan dan fitur baru.
