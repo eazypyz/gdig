@@ -77,10 +77,6 @@ Hasil deteksi secrets telah diklasifikasikan berdasarkan layanan untuk mempermud
 - Slack
 - Dan banyak layanan lainnya (lihat Keyhacks ruleset)
 
-## 📄 Lisensi
-
-[Tambahkan informasi lisensi jika ada]
-
 ## 🤝 Kontribusi
 
 Contributions are welcome! Silakan buka issue atau pull request untuk perbaikan dan fitur baru.
