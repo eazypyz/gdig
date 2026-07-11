@@ -55,6 +55,8 @@ CGO_ENABLED=0 go build -o gdig main.go
 | `-u` | Target URL (required) |
 | `-t` | Jumlah threads/goroutines (default: 5) |
 | `-s` | Silent mode - sembunyikan banner dan error |
+| `-a` | Add User-Agent |
+| `-c` | Add Cookie |
 
 ## 🔗 Output Format
 
